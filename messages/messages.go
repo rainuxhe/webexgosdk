@@ -8,24 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/YXHYW/webexgosdk/internal/config"
-	"github.com/YXHYW/webexgosdk/models"
+	"github.com/rainuxhe/webexgosdk/internal/config"
+	"github.com/rainuxhe/webexgosdk/models"
 )
-
-type messageReqBody struct {
-	RoomId          string              `json:"roomId,omitempty"`
-	ParentId        string              `json:"parentId,omitempty"`
-	ToPersonId      string              `json:"toPersonId,omitempty"`
-	ToPersonEmail   string              `json:"toPersonEmail,omitempty"`
-	Text            string              `json:"text,omitempty"`
-	Markdown        string              `json:"markdown,omitempty"`
-	Files           []string            `json:"files,omitempty"`
-	Attachments     []models.Attachment `json:"attachments,omitempty"`
-	MentionedPeople []string            `json:"mentionedPeople,omitempty"`
-	Before          string              `json:"before,omitempty"`
-	BeforeMessage   string              `json:"beforeMessage,omitempty"`
-	Max             int                 `json:"max,omitempty"`
-}
 
 type option func(*messageReqBody)
 
@@ -134,7 +119,7 @@ func (m *messages) catchErr(respBody io.Reader) {
 }
 
 // Post a plain text or rich text message, and optionally, a file attachment attachment, to a room.
-func (m *messages) Create(opts ...option) (response models.Response, err error) {
+func (m *messages) Create(opts ...option) (response Response, err error) {
 	url := fmt.Sprintf("%s/v1/messages", m.config.BaseURL())
 	reqBody := &messageReqBody{}
 	for _, opt := range opts {
@@ -201,7 +186,7 @@ func (m *messages) Delete(messageId string) error {
 	return nil
 }
 
-func (m *messages) Edit(messageId string, opts ...option) (response models.Response, err error) {
+func (m *messages) Edit(messageId string, opts ...option) (response Response, err error) {
 	url := fmt.Sprintf("%s/v1/messages/%s", m.config.BaseURL(), messageId)
 	reqBody := &messageReqBody{}
 	for _, opt := range opts {
@@ -242,7 +227,7 @@ func (m *messages) Edit(messageId string, opts ...option) (response models.Respo
 	return
 }
 
-func (m *messages) Get(messageId string) (response models.Response, err error) {
+func (m *messages) Get(messageId string) (response Response, err error) {
 	url := fmt.Sprintf("%s/v1/messages/%s", m.config.BaseURL(), messageId)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -272,7 +257,7 @@ func (m *messages) Get(messageId string) (response models.Response, err error) {
 
 // List all messages in a 1:1 (direct) room. Use the personId or personEmail query parameter to specify the room. Each message will include content attachments if present.
 // The list sorts the messages in descending order by creation date.
-func (m *messages) ListDirect(opts ...option) (response []models.Response, err error) {
+func (m *messages) ListDirect(opts ...option) (response []Response, err error) {
 	url := fmt.Sprintf("%s/messages/direct", m.config.BaseURL())
 	reqBody := &messageReqBody{}
 	for _, opt := range opts {
@@ -298,7 +283,7 @@ func (m *messages) ListDirect(opts ...option) (response []models.Response, err e
 		return
 	}
 
-	var respBody map[string][]models.Response
+	var respBody map[string][]Response
 	err = json.NewDecoder(resp.Body).Decode(&respBody)
 	if err != nil {
 		return
@@ -307,7 +292,7 @@ func (m *messages) ListDirect(opts ...option) (response []models.Response, err e
 }
 
 // Lists all messages in a room. Each message will include content attachments if present.
-func (m *messages) List(opts ...option) (response []models.Response, err error) {
+func (m *messages) List(opts ...option) (response []Response, err error) {
 	url := fmt.Sprintf("%s/messages", m.config.BaseURL())
 	reqBody := &messageReqBody{}
 	for _, opt := range opts {
@@ -333,7 +318,7 @@ func (m *messages) List(opts ...option) (response []models.Response, err error) 
 		return
 	}
 
-	var respBody map[string][]models.Response
+	var respBody map[string][]Response
 	err = json.NewDecoder(resp.Body).Decode(&respBody)
 	if err != nil {
 		return

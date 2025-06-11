@@ -1,3 +1,3 @@
-module github.com/YXHYW/webexgosdk
+module github.com/rainuxhe/webexgosdk
 
 go 1.24.3
