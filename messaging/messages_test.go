@@ -51,3 +51,30 @@ func TestMessagesServiceCreate(t *testing.T) {
 		t.Errorf("expected test-message-id, got %s", err)
 	}
 }
+
+
+func TestMessagesService_Create_InvalidParams(t *testing.T) {
+	session := core.NewRestSession(&core.RestSessionConfig{
+		AccessToken: "test-token",
+		BaseURL: "https://example.com",
+	})
+	service := NewMessagesService(session)
+	ctx := context.Background()
+	
+	// Test missing destination
+	_, err := service.Create(ctx, &MessageCreateRequest{
+		Text: "hello",
+	})
+	if err != core.ErrInvalidParameter {
+		t.Errorf("expected ErrInvalidParameter, got %v", err)
+	}
+	
+	// Test missing content
+	_, err = service.Create(ctx, &MessageCreateRequest{
+		RoomID: "test-room",
+	})
+	if err != core.ErrInvalidParameter {
+		t.Errorf("expected ErrInvalidParameter, got %v", err)
+	}
+	
+}

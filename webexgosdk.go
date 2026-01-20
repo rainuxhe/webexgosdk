@@ -13,7 +13,7 @@ const (
 	DefaultBaseURL        = "https://webexapis.com/v1/"
 	DefaultRequestTimeout = 60
 	AccessTokenEnvVar     = "WEBEX_ACCESS_TOKEN"
-	Version               = "0.0.2"
+	Version               = "0.1.0"
 )
 
 var (
@@ -21,13 +21,13 @@ var (
 )
 
 type MessagingAPI struct {
-	Messages *messaging.MessagesService
-	People   *messaging.PeopleService
-	Webhooks *messaging.WebhooksService
-	// Memberships *messaging.MembershipsService
-	// TeamMemberships *messaging.TeamMembershipsService
-	// Teams *messaging.TeamsService
-	// Rooms *messaging.RoomsService
+	Messages        *messaging.MessagesService
+	People          *messaging.PeopleService
+	Webhooks        *messaging.WebhooksService
+	Memberships     *messaging.MembershipsService
+	TeamMemberships *messaging.TeamMembershipsService
+	Teams           *messaging.TeamsService
+	Rooms           *messaging.RoomsService
 }
 
 type Client struct {
@@ -83,10 +83,13 @@ func NewClient(accessToken string, opts ...ClientOptions) (*Client, error) {
 	}
 
 	client.Messaging = &MessagingAPI{
-		Messages: messaging.NewMessagesService(session),
-		People:   messaging.NewPeopleService(session),
-		Webhooks: messaging.NewWebhooksService(session),
-		// ...
+		Messages:        messaging.NewMessagesService(session),
+		People:          messaging.NewPeopleService(session),
+		Webhooks:        messaging.NewWebhooksService(session),
+		Rooms:           messaging.NewRoomsService(session),
+		Teams:           messaging.NewTeamsService(session),
+		TeamMemberships: messaging.NewTeamMembershipsService(session),
+		Memberships:     messaging.NewMembershipsService(session),
 	}
 
 	return client, nil

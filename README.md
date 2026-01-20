@@ -1,6 +1,6 @@
 # webexgosdk
 
-Go SDK for Webex Api
+Go SDK for Webex Api. Integrates requests for Webex messaging, Webex Meeting, and Webex Calling.
 
 ## Installation
 
@@ -10,7 +10,37 @@ go get github.com/rainuxhe/webexgosdk
 
 ## Quick Start
 
-nil
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	"github.com/rainuxhe/webexgosdk"
+	"github.com/rainuxhe/webexgosdk/messaging"
+)
+
+func main() {
+	accessToken := ""
+	toPersonEmail := ""
+	client, err := webexgosdk.NewClient(accessToken)
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+
+	ctx := context.Background()
+	message, err := client.Messaging.Messages.Create(ctx, &messaging.MessageCreateRequest{
+		ToPersonEmail: toPersonEmail,
+		Markdown:      "This is message from webexgossdk",
+	})
+
+	if err != nil {
+		log.Fatalf("Failed to create message: %v", err)
+	}
+	log.Printf("Message created: %v", message)
+}
+```
 
 ## References
 
