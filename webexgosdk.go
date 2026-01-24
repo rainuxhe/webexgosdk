@@ -5,7 +5,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/rainuxhe/webexgosdk/calling"
 	"github.com/rainuxhe/webexgosdk/internal/core"
+	"github.com/rainuxhe/webexgosdk/meeting"
 	"github.com/rainuxhe/webexgosdk/messaging"
 )
 
@@ -30,8 +32,22 @@ type MessagingAPI struct {
 	Rooms           *messaging.RoomsService
 }
 
+type MeetingAPI struct {
+	Meetings    *meeting.MeetingsService
+	Invitees    *meeting.MeetingInviteesService
+	Registrants *meeting.MeetingRegistrantsService
+}
+
+type CallingAPI struct {
+	Calls       *calling.CallsService
+	CallHistory *calling.CallHistoryService
+	Voicemail   *calling.VoicemailService
+}
+
 type Client struct {
 	Messaging *MessagingAPI
+	Meeting   *MeetingAPI
+	Calling   *CallingAPI
 
 	session *core.RestSession
 }
@@ -90,6 +106,18 @@ func NewClient(accessToken string, opts ...ClientOptions) (*Client, error) {
 		Teams:           messaging.NewTeamsService(session),
 		TeamMemberships: messaging.NewTeamMembershipsService(session),
 		Memberships:     messaging.NewMembershipsService(session),
+	}
+
+	client.Meeting = &MeetingAPI{
+		Meetings:    meeting.NewMeetingsService(session),
+		Invitees:    meeting.NewMeetingInviteesService(session),
+		Registrants: meeting.NewMeetingRegistrantsService(session),
+	}
+
+	client.Calling = &CallingAPI{
+		Calls:       calling.NewCallsService(session),
+		CallHistory: calling.NewCallHistoryService(session),
+		Voicemail:   calling.NewVoicemailService(session),
 	}
 
 	return client, nil
